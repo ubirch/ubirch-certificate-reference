@@ -46,11 +46,14 @@ def verify_certificate(cert: str) -> bool:
     logger.info("payload [msgpack]:      {}".format(payload_msgpack.hex()))
 
     # create sha256 hash of msgpack payload
-    payload_hash = base64.b64encode(hashlib.sha256(payload_msgpack).digest()).decode()
-    logger.info("payload hash:           {}".format(payload_hash))
+    payload_hash = hashlib.sha256(payload_msgpack).digest()
+
+    # get the base64 string representation of the payload hash
+    payload_hash_base64 = base64.b64encode(payload_hash).decode()
+    logger.info("payload hash [base64]:  {}".format(payload_hash_base64))
 
     # request if hash is known by the ubirch trust service
-    if not verify(payload_hash, env):
+    if not verify(payload_hash_base64, env):
         logger.error("certificate payload data hash could not be verified by the ubirch trust service")
         return False
 

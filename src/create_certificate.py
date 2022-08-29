@@ -53,11 +53,14 @@ def create_certificate(payload_json: str) -> str:
     logger.info("payload [msgpack]:      {}".format(payload_msgpack.hex()))
 
     # create sha256 hash of msgpack payload
-    payload_hash = base64.b64encode(hashlib.sha256(payload_msgpack).digest()).decode()
-    logger.info("payload hash:           {}".format(payload_hash))
+    payload_hash = hashlib.sha256(payload_msgpack).digest()
+
+    # get the base64 string representation of the payload hash
+    payload_hash_base64 = base64.b64encode(payload_hash).decode()
+    logger.info("payload hash [base64]:  {}".format(payload_hash_base64))
 
     # send payload hash to the ubirch trust service to create a signed ubirch protocol package (UPP)
-    upp = certify(payload_hash, identity_id, env, client_cert_filename, client_cert_password)
+    upp = certify(payload_hash_base64, identity_id, env, client_cert_filename, client_cert_password)
     logger.debug("UPP with hash:          {}".format(upp.hex()))
 
     # unpack UPP (msgpack)

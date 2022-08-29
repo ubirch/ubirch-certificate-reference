@@ -4,14 +4,14 @@ from uuid import UUID
 import requests_pkcs12 as r
 
 
-def certify(data_hash: str, identity_id: UUID, stage: str, client_cert_filename: str,
+def certify(data_hash_base64: str, identity_id: UUID, stage: str, client_cert_filename: str,
             client_cert_password: str) -> bytes:
     if stage == "prod":
         url = "https://api.certify.ubirch.com"
     else:
         url = f"https://api.certify.{stage}.ubirch.com"
 
-    res = r.post(f"{url}/api/v1/x509/anchor", data=data_hash,
+    res = r.post(f"{url}/api/v1/x509/anchor", data=data_hash_base64,
                  headers={"X-Identity-Id": str(identity_id), "Content-Type": "text/plain"},
                  pkcs12_filename=client_cert_filename,
                  pkcs12_password=client_cert_password)

@@ -1,3 +1,4 @@
-base45
-msgpack
+base45~=0.4.4
+msgpack~=1.0.4
+requests~=2.28.1
 requests-pkcs12===1.10

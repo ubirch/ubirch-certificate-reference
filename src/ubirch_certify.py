@@ -4,8 +4,8 @@ from uuid import UUID
 import requests_pkcs12 as r
 
 
-def anchor(data_hash: str, identity_id: UUID, stage: str, client_cert_filename: str,
-           client_cert_password: str) -> bytes:
+def certify(data_hash: str, identity_id: UUID, stage: str, client_cert_filename: str,
+            client_cert_password: str) -> bytes:
     if stage == "prod":
         url = "https://api.certify.ubirch.com"
     else:

@@ -8,8 +8,8 @@ from uuid import UUID
 
 import msgpack
 
-from anchor import anchor
 from compress import compress_and_encode
+from ubirch_certify import certify
 
 CERT_HINT = 0xEE
 CERT_PREFIX = "C01:"
@@ -26,20 +26,17 @@ identity_id = UUID(hex=os.getenv('UBIRCH_IDENTITY_UUID'))
 with open(client_cert_pwd_file, 'r') as f:
     client_cert_password = f.read()
 
-usage = " usage:\n" \
-        " python3 certify.py <path to file containing JSON data map>"
+usage = "usage:\n" \
+        " python3 create_certificate.py <JSON data map>"
 
 if len(sys.argv) != 2:
     print(usage)
     sys.exit(1)
 
-input_file = sys.argv[1]
-
-with open(input_file, 'r') as f:
-    payload = f.read()
+certificate_payload_data = sys.argv[1]
 
 
-def certify(payload_json: str) -> str:
+def create_certificate(payload_json: str) -> str:
     logger.debug("input:                 {}".format(payload_json))
 
     # parse JSON payload
@@ -60,8 +57,8 @@ def certify(payload_json: str) -> str:
     logger.info("payload hash:           {}".format(payload_hash))
 
     # send payload hash to the ubirch trust service to create a signed ubirch protocol package (UPP)
-    upp = anchor(payload_hash, identity_id, env, client_cert_filename, client_cert_password)
-    logger.info("UPP with hash:          {}".format(upp.hex()))
+    upp = certify(payload_hash, identity_id, env, client_cert_filename, client_cert_password)
+    logger.debug("UPP with hash:          {}".format(upp.hex()))
 
     # unpack UPP (msgpack)
     unpacked_upp = msgpack.unpackb(upp)
@@ -72,7 +69,7 @@ def certify(payload_json: str) -> str:
 
     # convert UPP with original data payload to msgpack
     cert_msgpack = msgpack.packb(unpacked_upp)
-    logger.info("UPP with original data: {}".format(cert_msgpack.hex()))
+    logger.debug("UPP with original data: {}".format(cert_msgpack.hex()))
 
     # zlib-compress, base45-encode and prepend prefix for certificate
     cert = CERT_PREFIX + compress_and_encode(cert_msgpack).decode()
@@ -81,4 +78,4 @@ def certify(payload_json: str) -> str:
     return cert
 
 
-certify(payload)
+create_certificate(certificate_payload_data)

@@ -37,7 +37,7 @@ certificate_payload_data = sys.argv[1]
 
 
 def create_certificate(payload_json: str) -> str:
-    logger.debug("input:                 {}".format(payload_json))
+    logger.debug("input: {}".format(payload_json))
 
     # parse JSON payload
     payload_dict = json.loads(payload_json)
@@ -46,22 +46,22 @@ def create_certificate(payload_json: str) -> str:
     if not isinstance(payload_dict, dict):
         raise TypeError(f"Invalid input: not a JSON map (dict), is {type(payload_dict)}")
 
-    logger.info("payload [JSON]:         {}".format(payload_dict))
+    logger.info("certificate payload [JSON]:    {}".format(payload_dict))
 
     # convert JSON payload to msgpack
     payload_msgpack = msgpack.packb(payload_dict)
-    logger.info("payload [msgpack]:      {}".format(payload_msgpack.hex()))
+    logger.info("certificate payload [msgpack]: {}".format(payload_msgpack.hex()))
 
     # create sha256 hash of msgpack payload
     payload_hash = hashlib.sha256(payload_msgpack).digest()
 
     # get the base64 string representation of the payload hash
     payload_hash_base64 = base64.b64encode(payload_hash).decode()
-    logger.info("payload hash [base64]:  {}".format(payload_hash_base64))
+    logger.info("payload hash [base64]:         {}".format(payload_hash_base64))
 
     # send payload hash to the ubirch trust service to create a signed ubirch protocol package (UPP)
     upp = certify(payload_hash_base64, identity_id, env, client_cert_filename, client_cert_password)
-    logger.debug("UPP with hash:          {}".format(upp.hex()))
+    logger.debug("UPP with hash:                 {}".format(upp.hex()))
 
     # unpack UPP (msgpack)
     unpacked_upp = msgpack.unpackb(upp)
@@ -72,11 +72,11 @@ def create_certificate(payload_json: str) -> str:
 
     # convert UPP with original data payload to msgpack
     cert_msgpack = msgpack.packb(unpacked_upp)
-    logger.debug("UPP with original data: {}".format(cert_msgpack.hex()))
+    logger.debug("UPP with original data:        {}".format(cert_msgpack.hex()))
 
     # zlib-compress, base45-encode and prepend prefix for certificate
     cert = CERT_PREFIX + compress_and_encode(cert_msgpack).decode()
-    logger.info("certificate:            {}".format(cert))
+    logger.info("certificate:                   {}".format(cert))
 
     return cert
 

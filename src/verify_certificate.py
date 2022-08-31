@@ -29,13 +29,13 @@ certificate = sys.argv[1]
 
 
 def verify_certificate(cert: str) -> bool:
-    logger.info("certificate:            {}".format(cert))
+    logger.info("certificate:                   {}".format(cert))
 
     if not cert.startswith(CERT_PREFIX):
         raise ValueError("certificate does not have expected prefix {}".format(CERT_PREFIX))
 
     cert_msgpack = decompress_and_decode(cert.removeprefix(CERT_PREFIX))
-    logger.debug("UPP with original data: {}".format(cert_msgpack.hex()))
+    logger.debug("UPP with original data:        {}".format(cert_msgpack.hex()))
 
     unpacked_upp = msgpack.unpackb(cert_msgpack)
 
@@ -43,14 +43,14 @@ def verify_certificate(cert: str) -> bool:
         raise ValueError("invalid payload type {:02X}, must be {:02X}".format(unpacked_upp[-3], CERT_HINT))
 
     payload_msgpack = unpacked_upp[-2]
-    logger.info("payload [msgpack]:      {}".format(payload_msgpack.hex()))
+    logger.info("certificate payload [msgpack]: {}".format(payload_msgpack.hex()))
 
     # create sha256 hash of msgpack payload
     payload_hash = hashlib.sha256(payload_msgpack).digest()
 
     # get the base64 string representation of the payload hash
     payload_hash_base64 = base64.b64encode(payload_hash).decode()
-    logger.info("payload hash [base64]:  {}".format(payload_hash_base64))
+    logger.info("payload hash [base64]:         {}".format(payload_hash_base64))
 
     # request if hash is known by the ubirch trust service
     if not verify(payload_hash_base64, env):
@@ -58,6 +58,11 @@ def verify_certificate(cert: str) -> bool:
         return False
 
     logger.info("certificate verification successful")
+
+    # display verified original data
+    payload_json = msgpack.unpackb(payload_msgpack)
+    logger.info("certificate payload [JSON]:    {}".format(payload_json))
+
     return True
 
 

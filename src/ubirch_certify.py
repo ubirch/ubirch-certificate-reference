@@ -12,7 +12,9 @@ def certify(data_hash_base64: str, identity_id: UUID, stage: str, client_cert_fi
         url = f"https://api.certify.{stage}.ubirch.com"
 
     res = r.post(f"{url}/api/v1/x509/anchor", data=data_hash_base64,
-                 headers={"X-Identity-Id": str(identity_id), "Content-Type": "text/plain"},
+                 headers={"X-Identity-Id": str(identity_id),
+                          "X-UPP-Type-Id": "signed",
+                          "Content-Type": "text/plain"},
                  pkcs12_filename=client_cert_filename,
                  pkcs12_password=client_cert_password)
     if not res.status_code == 200:

@@ -23,11 +23,13 @@ pip install -r requirements.txt
 
 | Variable                    | Description                                                                            |
 |-----------------------------|----------------------------------------------------------------------------------------|
-| UBIRCH_CLIENT_CERT_PFX_FILE | client certificate file [*.pfx]                                                        |
-| UBIRCH_CLIENT_CERT_PWD_FILE | file containing the client certificate password                                        |
-| UBIRCH_IDENTITY_UUID        | UUID of the target identity                                                            |
+| UBIRCH_CLIENT_CERT_PFX_FILE | client certificate file [*.pfx] [^1]                                                   |
+| UBIRCH_CLIENT_CERT_PWD_FILE | file containing the client certificate password [^1]                                   |
+| UBIRCH_IDENTITY_UUID        | UUID of the target identity [^1]                                                       |
 | UBIRCH_ENV                  | _optional_: the UBIRCH backend environment ("dev" / "demo" / "prod"), default = "prod" |
 | LOGLEVEL                    | _optional_: logging level ("DEBUG" / "INFO" / "WARNING" / "ERROR"), default = "INFO"   |
+
+[^1]: Contact support@ubirch.com to get a client certificate and identity UUID.
 
 ### Certification Example Call
 

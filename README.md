@@ -4,6 +4,8 @@ A reference implementation for creating and verifying UBIRCH certificates in pyt
 
 ## Setup
 
+Requires Python3.9 or higher.
+
 ```commandline
 python3 -m venv venv3
 . venv3/bin/activate
@@ -30,7 +32,7 @@ pip install -r requirements.txt
 ### Certification Example Call
 
 > Certificate payload data has to be unique. Before running the example call, the input file has to be modified in order
-> to create a unique hash. Otherwise, the script will exit with an error "This data has already been anchored before"
+> to create a unique hash. Otherwise, the script will exit with an error "This data has already been anchored before".
 
 ```commandline
 UBIRCH_ENV=dev \
@@ -43,7 +45,7 @@ python3 src/create_certificate.py "$(<example-payload/example.json)"
 The resulting certificate will look like this:
 
 ```text
-C01:6BFK80-20:DWZH4C52MK3O3V35HA-HK3QGVES:L39K*6UNTKT3E$BLLA7:/6OF6JT6PEDYMK4I6..DF$D$NL7%E7WENJE9Z91CF/78QWG98EAT0SP4D*H-9QKWON/P/+D1 AST8J 732AQLQW0972M--3747TRO4ZUQ1I-7JGF1DWM6ISVO6$*ARMB628$S9%E9TSPAYKZ4
+C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4I6..DF$DNTL7%E7WENJEY34MECK OL:UATRVS33UCHALYV2TFESVA8AEP/7PM36/HF17L23XUMVSK8:7%ZB7ABR+SA37FECFLAMCB.5UOUTS+A.TI8H9-EBLHQ*%H5FJHG7
 ```
 
 ## UBIRCH Certificate Verification
@@ -64,7 +66,7 @@ C01:6BFK80-20:DWZH4C52MK3O3V35HA-HK3QGVES:L39K*6UNTKT3E$BLLA7:/6OF6JT6PEDYMK4I6.
 
 ```commandline
 UBIRCH_ENV=dev \
-python3 src/verify_certificate.py 'C01:6BFK80-20:DWZH4C52MK3O3V35HA-HK3QGVES:L39K*6UNTKT3E$BLLA7:/6OF6JT6PEDYMK4I6..DF$D$NL7%E7WENJE9Z91CF/78QWG98EAT0SP4D*H-9QKWON/P/+D1 AST8J 732AQLQW0972M--3747TRO4ZUQ1I-7JGF1DWM6ISVO6$*ARMB628$S9%E9TSPAYKZ4'
+python3 src/verify_certificate.py 'C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4I6..DF$DNTL7%E7WENJEY34MECK OL:UATRVS33UCHALYV2TFESVA8AEP/7PM36/HF17L23XUMVSK8:7%ZB7ABR+SA37FECFLAMCB.5UOUTS+A.TI8H9-EBLHQ*%H5FJHG7'
 ```
 
 > Due to processing time in the UBIRCH backend, it is possible for the verification of a certificate to fail shortly

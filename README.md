@@ -29,8 +29,6 @@ pip install -r requirements.txt
 | UBIRCH_ENV                  | _optional_: the UBIRCH backend environment ("dev" / "demo" / "prod"), default = "prod" |
 | LOGLEVEL                    | _optional_: logging level ("DEBUG" / "INFO" / "WARNING" / "ERROR"), default = "INFO"   |
 
-[^1]: Contact support@ubirch.com to get a client certificate and identity UUID.
-
 ### Certification Example Call
 
 > Certificate payload data has to be unique. Before running the example call, the input file has to be modified in order
@@ -53,7 +51,7 @@ C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4
 ## UBIRCH Certificate Verification
 
 1. [Install dependencies](#setup)
-2. _(optional)_ Set the [environment variables](#environment-variables-for-certificate-verification)
+2. Set the [environment variables](#environment-variables-for-certificate-verification)
 3. Run the [`verify_certificate.py` script](src/verify_certificate.py) passing the certificate
    as command line argument, see [example](#verification-example-call)
 
@@ -61,6 +59,7 @@ C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4
 
 | Variable                    | Description                                                                            |
 |-----------------------------|----------------------------------------------------------------------------------------|
+| UBIRCH_VERIFICATION_TOKEN   | access token for the UBIRCH verification service [^1]                                  |
 | UBIRCH_ENV                  | _optional_: the UBIRCH backend environment ("dev" / "demo" / "prod"), default = "prod" |
 | LOGLEVEL                    | _optional_: logging level ("DEBUG" / "INFO" / "WARNING" / "ERROR"), default = "INFO"   |
 
@@ -73,3 +72,5 @@ python3 src/verify_certificate.py 'C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39
 
 > Due to processing time in the UBIRCH backend, it is possible for the verification of a certificate to fail shortly
 > after its creation.
+
+[^1]: Contact support@ubirch.com to get a client certificate, identity UUID and access token.

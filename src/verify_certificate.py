@@ -20,6 +20,7 @@ logging.basicConfig(format='%(asctime)s %(name)20.20s %(levelname)-8.8s %(messag
 logger = logging.getLogger()
 
 env = os.getenv("UBIRCH_ENV", "prod")
+verification_token = os.getenv('UBIRCH_VERIFICATION_TOKEN')
 
 usage = "usage:\n" \
         " python3 verify_certificate.py <ubirch certificate>"
@@ -63,7 +64,7 @@ def verify_certificate(cert: str) -> bool:
     logger.info("payload hash [base64]:         {}".format(payload_hash_base64))
 
     # request if hash is known by the ubirch trust service
-    if not verify(payload_hash_base64, env):
+    if not verify(payload_hash_base64, env, verification_token):
         logger.error("certificate payload data hash could not be verified by the ubirch trust service")
         return False
 

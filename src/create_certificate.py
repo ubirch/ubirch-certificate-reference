@@ -11,8 +11,11 @@ import msgpack
 from compress import compress_and_encode
 from ubirch_certify import certify
 
-CERT_HINT = 0xEE
+CERT_TYPE = 0xEE
 CERT_PREFIX = "C01:"
+
+UPP_PAYLOAD_IDX = -2
+UPP_TYPE_IDX = -3
 
 LOGLEVEL = os.getenv("LOGLEVEL", "INFO").upper()
 logging.basicConfig(format='%(asctime)s %(name)20.20s %(levelname)-8.8s %(message)s', level=LOGLEVEL)
@@ -39,7 +42,7 @@ certificate_payload_data = sys.argv[1]
 def create_certificate(payload_json: str) -> str:
     logger.debug("input: {}".format(payload_json))
 
-    # parse JSON payload
+    # parse JSON certificate payload
     payload_dict = json.loads(payload_json)
 
     # assert valid input: JSON map
@@ -48,29 +51,30 @@ def create_certificate(payload_json: str) -> str:
 
     logger.info("certificate payload [JSON]:    {}".format(payload_dict))
 
-    # convert JSON payload to msgpack
+    # msgpack-encode JSON certificate payload
     payload_msgpack = msgpack.packb(payload_dict)
     logger.info("certificate payload [msgpack]: {}".format(payload_msgpack.hex()))
 
-    # create sha256 hash of msgpack payload
+    # create sha256 hash of msgpack-encoded certificate payload
     payload_hash = hashlib.sha256(payload_msgpack).digest()
 
     # get the base64 string representation of the payload hash
     payload_hash_base64 = base64.b64encode(payload_hash).decode()
     logger.info("payload hash [base64]:         {}".format(payload_hash_base64))
 
-    # send payload hash to the ubirch trust service to create a signed ubirch protocol package (UPP)
+    # send payload hash to the ubirch trust service to create a signed Ubirch Protocol Package (UPP)
     upp = certify(payload_hash_base64, identity_id, env, client_cert_filename, client_cert_password)
     logger.debug("UPP with hash:                 {}".format(upp.hex()))
 
-    # unpack UPP (msgpack)
+    # decode the msgpack-encoded UPP, the decoded UPP is an array with 5 elements
+    # [version, uuid, type, certificate payload hash, signature]
     unpacked_upp = msgpack.unpackb(upp)
-    # replace hashed payload with original data (msgpack)
-    unpacked_upp[-2] = payload_msgpack
-    # set payload type hint accordingly
-    unpacked_upp[-3] = CERT_HINT
 
-    # convert UPP with original data payload to msgpack
+    # insert the msgpack-encoded certificate payload into the payload field and set type hint accordingly
+    unpacked_upp[UPP_PAYLOAD_IDX] = payload_msgpack
+    unpacked_upp[UPP_TYPE_IDX] = CERT_TYPE
+
+    # msgpack-encode UPP with original certificate payload
     cert_msgpack = msgpack.packb(unpacked_upp)
     logger.debug("UPP with original data:        {}".format(cert_msgpack.hex()))
 

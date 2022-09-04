@@ -6,6 +6,16 @@ import requests_pkcs12 as r
 
 def certify(data_hash_base64: str, identity_id: UUID, stage: str,
             client_cert_filename: str, client_cert_password: str) -> bytes:
+    """
+    Send a base64-encoded data hash to the UBIRCH certify-API and return the signed UPP containing the data hash.
+
+    :param data_hash_base64: the base64-encoded data hash string representation
+    :param identity_id: the UUID of the target identity
+    :param stage: the UBIRCH backend environment
+    :param client_cert_filename: the filename of the certificate for client certificate authentication
+    :param client_cert_password: the client certificate password
+    :return: the signed UPP containing the data hash
+    """
     if stage == "prod":
         url = "https://api.certify.ubirch.com"
     else:

@@ -63,7 +63,7 @@ def verify_certificate(cert: str) -> bool:
     payload_hash_base64 = base64.b64encode(payload_hash).decode()
     logger.info("payload hash [base64]:         {}".format(payload_hash_base64))
 
-    # request if hash is known by the ubirch trust service
+    # verify hash at the ubirch trust service
     if not verify(payload_hash_base64, env, verification_token):
         logger.error("certificate payload data hash could not be verified by the ubirch trust service")
         return False

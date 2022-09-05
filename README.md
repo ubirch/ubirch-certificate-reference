@@ -1,6 +1,10 @@
 # UBIRCH Certificate Reference
 
-A reference implementation for creating and verifying UBIRCH certificates in python.
+A reference implementation for creating and verifying UBIRCH self-contained certificates in python.
+
+## Specification
+
+![UBIRCH self-contained certificate specification](doc/ubirch_certificate-Certificate-Spec.png)
 
 ## Setup
 
@@ -17,7 +21,7 @@ pip install -r requirements.txt
 1. [Install dependencies](#setup)
 2. Set the required [environment variables](#environment-variables-for-certificate-creation)
 3. Run the [`create_certificate.py` script](src/create_certificate.py) passing the certificate payload data (JSON)
-   as command line argument, see [example](#certification-example-call)
+   as command line argument, see [example](#certificate-creation-example-call)
 
 ### Environment Variables for Certificate Creation
 
@@ -29,7 +33,7 @@ pip install -r requirements.txt
 | UBIRCH_ENV                  | _optional_: the UBIRCH backend environment ("dev" / "demo" / "prod"), default = "prod" |
 | LOGLEVEL                    | _optional_: logging level ("DEBUG" / "INFO" / "WARNING" / "ERROR"), default = "INFO"   |
 
-### Certification Example Call
+### Certificate Creation Example Call
 
 > Certificate payload data has to be unique. Before running the example call, the input file has to be modified in order
 > to create a unique hash. Otherwise, the script will exit with an error "This data has already been anchored before".
@@ -48,12 +52,16 @@ The resulting certificate will look like this:
 C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4I6..DF$DNTL7%E7WENJEY34MECK OL:UATRVS33UCHALYV2TFESVA8AEP/7PM36/HF17L23XUMVSK8:7%ZB7ABR+SA37FECFLAMCB.5UOUTS+A.TI8H9-EBLHQ*%H5FJHG7
 ```
 
+### Certificate Creation Process
+
+![UBIRCH certificate creation process](doc/ubirch_certificate-Certification-Process.png)
+
 ## UBIRCH Certificate Verification
 
 1. [Install dependencies](#setup)
 2. Set the [environment variables](#environment-variables-for-certificate-verification)
 3. Run the [`verify_certificate.py` script](src/verify_certificate.py) passing the certificate
-   as command line argument, see [example](#verification-example-call)
+   as command line argument, see [example](#certificate-verification-example-call)
 
 ### Environment Variables for Certificate Verification
 
@@ -63,7 +71,7 @@ C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4
 | UBIRCH_ENV                  | _optional_: the UBIRCH backend environment ("dev" / "demo" / "prod"), default = "prod" |
 | LOGLEVEL                    | _optional_: logging level ("DEBUG" / "INFO" / "WARNING" / "ERROR"), default = "INFO"   |
 
-### Verification Example Call
+### Certificate Verification Example Call
 
 ```commandline
 UBIRCH_ENV=dev \
@@ -72,5 +80,9 @@ python3 src/verify_certificate.py 'C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39
 
 > Due to processing time in the UBIRCH backend, it is possible for the verification of a certificate to fail shortly
 > after its creation.
+
+### Certificate Verification Process
+
+![UBIRCH certificate verification process](doc/ubirch_certificate-Verification-Process.png)
 
 [^1]: Contact support@ubirch.com to get a client certificate, identity UUID and access token.

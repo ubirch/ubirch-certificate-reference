@@ -12,13 +12,12 @@ from compress import compress_and_encode
 from ubirch_certify import certify
 
 CERT_TYPE = 0xEE
-CERT_PREFIX = "C01:"
 
 UPP_PAYLOAD_IDX = -2
 UPP_TYPE_IDX = -3
 
 LOGLEVEL = os.getenv("LOGLEVEL", "INFO").upper()
-logging.basicConfig(format='%(asctime)s %(name)20.20s %(levelname)-8.8s %(message)s', level=LOGLEVEL)
+logging.basicConfig(format='%(asctime)s %(name)20.20s %(levelname)-8.8s %(message)s', level=LOGLEVEL, stream=sys.stderr)
 logger = logging.getLogger()
 
 env = os.getenv("UBIRCH_ENV", "prod")
@@ -30,16 +29,22 @@ with open(client_cert_pwd_file, 'r') as f:
     client_cert_password = f.read()
 
 usage = "usage:\n" \
-        " python3 create_certificate.py <JSON data map>"
+        "  python3 create_certificate.py json-file [certificate-prefix]"
 
-if len(sys.argv) != 2:
+cert_prefix = "C01:"
+
+if len(sys.argv) < 2:
     print(usage)
     sys.exit(1)
 
-certificate_payload_data = sys.argv[1]
+if len(sys.argv) > 2:
+    cert_prefix = sys.argv[2]
+
+with open(sys.argv[1], "r") as f:
+    certificate_payload_data = f.read()
 
 
-def create_certificate(payload_json: str) -> str:
+def create_certificate(payload_json: str, cert_prefix: str) -> str:
     logger.debug("input: {}".format(payload_json))
 
     # parse JSON certificate payload
@@ -79,10 +84,11 @@ def create_certificate(payload_json: str) -> str:
     logger.debug("UPP with original data:        {}".format(cert_msgpack.hex()))
 
     # zlib-compress, base45-encode and prepend prefix for certificate
-    cert = CERT_PREFIX + compress_and_encode(cert_msgpack).decode()
+    cert = cert_prefix + compress_and_encode(cert_msgpack).decode()
     logger.info("certificate:                   {}".format(cert))
 
     return cert
 
 
-create_certificate(certificate_payload_data)
+cert = create_certificate(certificate_payload_data, cert_prefix)
+print(cert)

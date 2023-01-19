@@ -39,17 +39,23 @@ pip install -r requirements.txt
 > to create a unique hash. Otherwise, the script will exit with an error "This data has already been anchored before".
 
 ```commandline
-UBIRCH_ENV=dev \
+UBIRCH_ENV=<stage> \
 UBIRCH_CLIENT_CERT_PFX_FILE=<client certificate filename>.pfx \
 UBIRCH_CLIENT_CERT_PWD_FILE=<client certificate password filename>.txt \
 UBIRCH_IDENTITY_UUID=<target identity ID> \
-python3 src/create_certificate.py "$(<example-payload/example.json)"
+python3 src/create_certificate.py <certificate payload filename>.json [<certificate-prefix>]
 ```
 
 The resulting certificate will look like this:
 
 ```text
 C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4I6..DF$DNTL7%E7WENJEY34MECK OL:UATRVS33UCHALYV2TFESVA8AEP/7PM36/HF17L23XUMVSK8:7%ZB7ABR+SA37FECFLAMCB.5UOUTS+A.TI8H9-EBLHQ*%H5FJHG7
+```
+
+### QR code generation
+
+```commandline
+python3 src/create_qr_code.py '<base45-encoded certificate>' [<qr-code-filename>.png]
 ```
 
 ### Certificate Creation Process
@@ -74,7 +80,7 @@ C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4
 ### Certificate Verification Example Call
 
 ```commandline
-UBIRCH_ENV=dev \
+UBIRCH_ENV=<stage> \
 python3 src/verify_certificate.py 'C01:6BFN80%20:DWZH4C52MK3O3V35HA-HK3QGVES:L39KE8UIX4NTKT3E$BLLA7:/6OF6JT6PEDYMK4I6..DF$DNTL7%E7WENJEY34MECK OL:UATRVS33UCHALYV2TFESVA8AEP/7PM36/HF17L23XUMVSK8:7%ZB7ABR+SA37FECFLAMCB.5UOUTS+A.TI8H9-EBLHQ*%H5FJHG7'
 ```
 

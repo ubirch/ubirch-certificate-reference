@@ -2,3 +2,8 @@ base45~=0.4.4
 msgpack~=1.0.4
 requests~=2.28.1
 requests-pkcs12===1.10
+pyqrcode~=1.2.1
+pypng
+qrtools~=0.0.2
+pyzbar~=0.1.8
+Pillow~=8.3.2

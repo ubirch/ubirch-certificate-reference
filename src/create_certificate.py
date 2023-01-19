@@ -7,12 +7,12 @@ import sys
 from uuid import UUID
 
 import msgpack
+import pyqrcode
 
 from compress import compress_and_encode
 from ubirch_certify import certify
 
 CERT_TYPE = 0xEE
-CERT_PREFIX = "C01:"
 
 UPP_PAYLOAD_IDX = -2
 UPP_TYPE_IDX = -3
@@ -30,16 +30,27 @@ with open(client_cert_pwd_file, 'r') as f:
     client_cert_password = f.read()
 
 usage = "usage:\n" \
-        " python3 create_certificate.py <JSON data map>"
+        "  python3 create_certificate.py json-file prefix qrcode-file"
 
-if len(sys.argv) != 2:
+qrcode_file_name = "qrcode.png"
+cert_prefix = "C01:"
+
+if len(sys.argv) < 3:
     print(usage)
     sys.exit(1)
 
-certificate_payload_data = sys.argv[1]
+if len(sys.argv) > 2:
+    cert_prefix = sys.argv[2]
+
+if len(sys.argv) > 3:
+    qrcode_file_name = sys.argv[3]
+
+certificate_payload_data = ""
+with open(sys.argv[1], "r") as f:
+    certificate_payload_data = f.read()
 
 
-def create_certificate(payload_json: str) -> str:
+def create_certificate(payload_json: str, cert_prefix: str) -> str:
     logger.debug("input: {}".format(payload_json))
 
     # parse JSON certificate payload
@@ -79,10 +90,18 @@ def create_certificate(payload_json: str) -> str:
     logger.debug("UPP with original data:        {}".format(cert_msgpack.hex()))
 
     # zlib-compress, base45-encode and prepend prefix for certificate
-    cert = CERT_PREFIX + compress_and_encode(cert_msgpack).decode()
+    cert = cert_prefix + compress_and_encode(cert_msgpack).decode()
     logger.info("certificate:                   {}".format(cert))
 
     return cert
 
 
-create_certificate(certificate_payload_data)
+def create_qrcode(qr_content_data, image_file_name):
+    # create QR code from the data 
+    qrcode = pyqrcode.create(f"{qr_content_data}", error='Q', mode='alphanumeric')
+    qrcode.png(image_file_name, scale=4, quiet_zone=0)
+    logger.info(f"wrote {image_file_name}")
+
+
+cert = create_certificate(certificate_payload_data, cert_prefix)
+create_qrcode(cert, qrcode_file_name)

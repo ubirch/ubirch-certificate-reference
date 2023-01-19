@@ -7,7 +7,6 @@ import sys
 from uuid import UUID
 
 import msgpack
-import pyqrcode
 
 from compress import compress_and_encode
 from ubirch_certify import certify
@@ -18,7 +17,7 @@ UPP_PAYLOAD_IDX = -2
 UPP_TYPE_IDX = -3
 
 LOGLEVEL = os.getenv("LOGLEVEL", "INFO").upper()
-logging.basicConfig(format='%(asctime)s %(name)20.20s %(levelname)-8.8s %(message)s', level=LOGLEVEL)
+logging.basicConfig(format='%(asctime)s %(name)20.20s %(levelname)-8.8s %(message)s', level=LOGLEVEL, stream=sys.stderr)
 logger = logging.getLogger()
 
 env = os.getenv("UBIRCH_ENV", "prod")
@@ -30,22 +29,17 @@ with open(client_cert_pwd_file, 'r') as f:
     client_cert_password = f.read()
 
 usage = "usage:\n" \
-        "  python3 create_certificate.py json-file prefix qrcode-file"
+        "  python3 create_certificate.py json-file [certificate-prefix]"
 
-qrcode_file_name = "qrcode.png"
 cert_prefix = "C01:"
 
-if len(sys.argv) < 3:
+if len(sys.argv) < 2:
     print(usage)
     sys.exit(1)
 
 if len(sys.argv) > 2:
     cert_prefix = sys.argv[2]
 
-if len(sys.argv) > 3:
-    qrcode_file_name = sys.argv[3]
-
-certificate_payload_data = ""
 with open(sys.argv[1], "r") as f:
     certificate_payload_data = f.read()
 
@@ -96,12 +90,5 @@ def create_certificate(payload_json: str, cert_prefix: str) -> str:
     return cert
 
 
-def create_qrcode(qr_content_data, image_file_name):
-    # create QR code from the data 
-    qrcode = pyqrcode.create(f"{qr_content_data}", error='Q', mode='alphanumeric')
-    qrcode.png(image_file_name, scale=4, quiet_zone=0)
-    logger.info(f"wrote {image_file_name}")
-
-
 cert = create_certificate(certificate_payload_data, cert_prefix)
-create_qrcode(cert, qrcode_file_name)
+print(cert)

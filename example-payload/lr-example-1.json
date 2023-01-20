@@ -1,0 +1,20 @@
+{
+  "p": {
+    "fnt": "MUELLER<MUSTERFRAU",
+    "gnt": "MAXIMILIANE<ISOLDE",
+    "fn": "Müller-Musterfrau",
+    "gn": "Maximiliane Isolde",
+    "dob": "1980-01-20"
+  },
+  "mo": {
+    "id": "01DE/4967999/DXSGWLWL40SU8ZFKIYIBK39A3#S",
+    "ds": "2023-01-13",
+    "dr": "2023-01-14",
+    "mor": {
+      "2093-3": 0
+    }
+  },
+  "di": "2022-02-04",
+  "ci": "svlr:1:ub:DE/JBI32302/4Ef57666/22",
+  "ver": "1.0.0"
+}
